@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ def index():
         settings = json.load(f)
     return render_template("index.html", **settings)
 
-@app.route("/candidate/<id>")
+@app.route('/candidate/<id>')
 def prof(id):
     with open("candidates.json") as f:
         candidates = json.load(f)
@@ -23,7 +23,33 @@ def prof(id):
 def list_candidates():
     with open("candidates.json") as f:
         candidates = json.load(f)
-    return render_template("list.html", users=candidates)
+    return render_template("list.html", users = candidates)
 
-if __name__ == "__main__":
-    app.run()
+@app.route("/search/")
+def search_page():
+    name = request.args.get("name")
+    with open("candidates.json") as f:
+        candidates = json.load(f)
+    users = []
+    if name:
+        for candidate in candidates:
+            if name in candidate["name"]:
+                users.append(candidate["name"])
+
+    return render_template("find name.html", users=users, cnt=len(users))
+
+@app.route("/skill/<skill>")
+def find_skill(skill):
+    with open("candidates.json") as f:
+        settings = json.load(f)
+    users = []
+    cnt = 0
+    for candidate in candidates:
+        if skill in candidate["skills"]:
+            users.append(candidate["name"])
+            cnt += 1
+            if settings["limit"] ==cnt:
+                return render_template("find name.html", users=users, cnt=len(users))
+    return render_template("find name.html", users=users, cnt=len(users))
+
+app.run()
