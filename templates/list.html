@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for u in users %}
+<a href = "/candidate/{{u.id}}">{{u.name}}</a>
+{% endfor %}
+<br>
+</body>
+</html>
